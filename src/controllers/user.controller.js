@@ -156,8 +156,9 @@ const logoutUser = asyncHandler(async(req, res)=>{
     await User.findByIdAndUpdate(
         req.user._id,
         {
-            $set: {
-                refreshToken : undefined
+            //this removes the field from document
+            $unset: {
+                refreshToken : 1 
             }
         },
         {
@@ -302,11 +303,11 @@ const updateUserAvatar = asyncHandler(async(req, res)=>{
 const updateUserCoverImage = asyncHandler(async(req, res)=>{
     const coverImageLocalPath = req.file?.path
 
-    if(!avatarLocalPath){
+    if(!coverImageLocalPath){
         throw new ApiError(400, "Cover-Image file is missing")
     }
 
-    const coverImage = await uploadOnCloudinary(avatarLocalPath)
+    const coverImage = await uploadOnCloudinary(coverImageLocalPath)
 
     if(!coverImage.url){
         throw new ApiError(400, "Error while uploading CoverImage")
